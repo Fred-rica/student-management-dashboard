@@ -26,7 +26,7 @@ const StudentDetails = () => {
   return (
     <>
       <div className="w-full  mb-4 border-gray-200 bg-gray-50 border p-3">
-        <h1 className="text-sm md:text-3xl mb-5 font-semibold">
+        <h1 className="text-sm md:text-3xl mb-5 font-semibold text-black">
           {" "}
           Student Profile Management dashboard
         </h1>

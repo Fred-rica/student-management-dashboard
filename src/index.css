@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body {
+  @apply bg-white text-gray-900; /* Change to your preferred colors */
+}
+
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

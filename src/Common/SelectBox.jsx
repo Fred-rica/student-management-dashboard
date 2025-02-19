@@ -4,7 +4,7 @@ const SelectBox = ({ value, onChange, options, label, className = "" }) => {
   return (
     <div className="flex items-center space-x-2 w-full">
       {label && (
-        <label className="text-sm font-medium whitespace-nowrap">{label}</label>
+        <label className="text-sm font-medium whitespace-nowrap ">{label}</label>
       )}
       <select
         value={value}
