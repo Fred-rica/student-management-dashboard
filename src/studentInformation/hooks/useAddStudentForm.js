@@ -9,7 +9,7 @@ export default function useAddStudentForm(
 ) {
   const { addStudent } = useStudentContext();
 
-  // Define validation schema for applications
+  //validation schema for applications array
   const applicationSchema = z.object({
     program: z.string().min(3, "Program must be at least 3 characters"),
     date: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
@@ -18,6 +18,7 @@ export default function useAddStudentForm(
     status: z.enum(["Pending", "Approved", "Rejected"]),
   });
 
+  //validation schema for adding new student
   const studentSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
@@ -71,6 +72,7 @@ export default function useAddStudentForm(
   const handleChange = (e, index = null) => {
     const { name, value } = e.target;
 
+    // updates applications list in the student profile
     if (index !== null) {
       setFormData((prev) => {
         const updatedApplications = [...prev.applications];
@@ -86,7 +88,7 @@ export default function useAddStudentForm(
 
     validateField(name, value, index);
   };
-
+  // Adds new fields for additional aplications
   const addApplication = () => {
     setFormData((prev) => ({
       ...prev,
@@ -94,6 +96,13 @@ export default function useAddStudentForm(
         ...prev.applications,
         { program: "", date: "", status: "Pending" },
       ],
+    }));
+  };
+  //Removes the last application on the list
+  const removeLatestApplication = () => {
+    setFormData((prev) => ({
+      ...prev,
+      applications: prev.applications.slice(0, -1),
     }));
   };
 
@@ -138,5 +147,6 @@ export default function useAddStudentForm(
     handleChange,
     handleSubmit,
     addApplication,
+    removeLatestApplication,
   };
 }

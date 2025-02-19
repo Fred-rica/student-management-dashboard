@@ -3,8 +3,14 @@ import InputBox from "../Common/InputBox";
 import useAddStudentForm from "./hooks/useAddStudentForm";
 
 const AddStudentForm = ({ setIsModalOpen, initialData, onStudentAdded }) => {
-  const { formData, errors, handleChange, handleSubmit, addApplication } =
-    useAddStudentForm(setIsModalOpen, initialData, onStudentAdded);
+  const {
+    formData,
+    errors,
+    handleChange,
+    handleSubmit,
+    addApplication,
+    removeLatestApplication,
+  } = useAddStudentForm(setIsModalOpen, initialData, onStudentAdded);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -53,37 +59,51 @@ const AddStudentForm = ({ setIsModalOpen, initialData, onStudentAdded }) => {
       <div className="space-y-3">
         <h3 className="font-semibold text-left">Applications</h3>
         {errors.applications && (
-          <p className="text-red-500 text-sm text-left">{errors.applications}</p>
+          <p className="text-red-500 text-sm text-left">
+            {errors.applications}
+          </p>
         )}
         {formData.applications.map((app, index) => (
-          <div key={index} className="border p-2 rounded-md space-y-2">
-            <InputBox
-              type="text"
-              name={`applications[${index}].program`}
-              value={app.program}
-              onChange={(e) => handleChange(e, index)}
-              placeholder="Program Name"
-              label="Program"
-            />
-            <InputBox
-              type="date"
-              name={`applications[${index}].date`}
-              value={app.date}
-              onChange={(e) => handleChange(e, index)}
-              placeholder="yyyy-mm-dd"
-              label="Application Date"
-            />
-            <select
-              name={`applications[${index}].status`}
-              value={app.status}
-              onChange={(e) => handleChange(e, index)}
-              className="w-full p-2 border rounded-md"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Approved">Approved</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
+          <>
+            <div key={index} className="border p-2 rounded-md space-y-2 w-full">
+              <InputBox
+                type="text"
+                name={`applications[${index}].program`}
+                value={app.program}
+                onChange={(e) => handleChange(e, index)}
+                placeholder="Program Name"
+                label="Program"
+              />
+              <InputBox
+                type="date"
+                name={`applications[${index}].date`}
+                value={app.date}
+                onChange={(e) => handleChange(e, index)}
+                placeholder="yyyy-mm-dd"
+                label="Application Date"
+              />
+              <select
+                name={`applications[${index}].status`}
+                value={app.status}
+                onChange={(e) => handleChange(e, index)}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+              {formData?.applications?.length - 1 === index && (
+                <div className="flex justify-end">
+                  <button
+                    onClick={removeLatestApplication}
+                    className="bg-red-500 text-white p-2 rounded-md cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
         ))}
         <button
           type="button"

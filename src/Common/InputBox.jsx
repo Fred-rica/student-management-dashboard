@@ -1,6 +1,4 @@
-
 import PropTypes from "prop-types";
-
 
 const InputBox = ({
   value,
@@ -8,12 +6,14 @@ const InputBox = ({
   placeholder = "",
   className = "",
   label,
-  name
+  name,
 }) => {
   return (
     <div className={` w-full ${className} space-y-2`}>
       {label && (
-        <label className="text-sm flex justify-start font-medium whitespace-nowrap">{label}</label>
+        <label className="text-sm flex justify-start font-medium whitespace-nowrap">
+          {label}
+        </label>
       )}
       <input
         type="text"

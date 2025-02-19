@@ -19,6 +19,7 @@ const Table = ({
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full border-collapse">
+        {/* Renders table headers*/}
         <thead>
           <tr className="bg-[#008F8F]/50 text-primary font-semibold text-xs text-center">
             {headers.map((header, index) => (
@@ -32,6 +33,7 @@ const Table = ({
           {paginatedData.map((rowData, index) => {
             return (
               <React.Fragment key={index}>
+                {/* Renders table rows*/}
                 <tr
                   className={`hover:bg-[#F1F5F9] cursor-pointer text-center ${
                     expandedRow === index ? "bg-[#F1F5F9]" : ""
@@ -39,7 +41,7 @@ const Table = ({
                 >
                   {renderRow(rowData, index, handleToggleExpand, expandedRow)}
                 </tr>
-
+                {/* To display addidtional items on small screen */}
                 {expandedRow === index && renderExpandedRow && (
                   <tr className="bg-inherit">
                     <td colSpan="6" className="">
@@ -76,7 +78,7 @@ const Table = ({
     </div>
   );
 };
-// Prop validation for headers
+
 Table.propTypes = {
   headers: PropTypes.arrayOf(PropTypes.string).isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,

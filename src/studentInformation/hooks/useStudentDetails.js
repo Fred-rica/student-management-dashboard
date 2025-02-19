@@ -7,6 +7,7 @@ export default function useStudentDetails() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Searchby Options
   const searchOptions = [
     { value: "name", label: "Name" },
     { value: "email", label: "Email" },
@@ -67,6 +68,7 @@ export default function useStudentDetails() {
     });
   }, []);
 
+  // searches through list of student based on determined parameters
   useEffect(() => {
     if (!query.searchString) {
       setFilteredStudents(students);
