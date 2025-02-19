@@ -1,0 +1,179 @@
+import { useState } from "react";
+import { z } from "zod";
+import InputBox from "../Common/InputBox";
+import { useStudentContext } from "../context/StudentContext";// Use context instead
+import PropTypes from "prop-types";
+
+// Define validation schema
+const studentSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  email: z.string().email("Invalid email address"),
+  dateOfBirth: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
+    message: "Invalid date",
+  }),
+  applications: z
+    .number()
+    .min(1, "Number of applications must be at least 1")
+    .max(100, "Cannot exceed 100 applications"),
+});
+
+const AddStudentForm = ({ onStudentAdded, setIsModalOpen }) => {
+  const { addStudent } = useStudentContext();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    dateOfBirth: "",
+    applications: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const validateField = (field, value) => {
+    const newData = { ...formData, [field]: value };
+
+    if (field === "applications") {
+      newData[field] = Number(value);
+    }
+
+    const validationResult = studentSchema.safeParse(newData);
+
+    if (!validationResult.success) {
+      const formattedErrors = validationResult.error.format();
+      setErrors((prev) => ({
+        ...prev,
+        [field]: formattedErrors[field]?._errors[0] || "",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: "",
+      }));
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    validateField(name, value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Convert applications to a number
+    const parsedData = {
+      ...formData,
+      applications: Number(formData.applications),
+      status: "Active",
+    };
+
+    // Validate entire form before submission
+    const validationResult = studentSchema.safeParse(parsedData);
+
+    if (!validationResult.success) {
+      const formattedErrors = validationResult.error.format();
+      setErrors({
+        name: formattedErrors.name?._errors[0] || "",
+        email: formattedErrors.email?._errors[0] || "",
+        dateOfBirth: formattedErrors.dateOfBirth?._errors[0] || "",
+        applications: formattedErrors.applications?._errors[0] || "",
+      });
+      return;
+    }
+
+    // Add new student using context function
+    addStudent(parsedData);
+
+    if (onStudentAdded) onStudentAdded(parsedData);
+
+    // Reset form
+    setFormData({ name: "", email: "", dateOfBirth: "", applications: "" });
+    setErrors({});
+    setIsModalOpen(false);
+  };
+
+  return (
+    <section className="w-full bg-white p-6 rounded-md shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <InputBox
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Name"
+            label="Name"
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm text-left">{errors.name}</p>
+          )}
+        </div>
+
+        <div>
+          <InputBox
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email Address"
+            label="Email Address"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm text-left">{errors.email}</p>
+          )}
+        </div>
+
+        <div>
+          <InputBox
+            type="date"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            placeholder="yyyy-mm-dd"
+            label="Date of Birth"
+          />
+          {errors.dateOfBirth && (
+            <p className="text-red-500 text-sm text-left">
+              {errors.dateOfBirth}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <InputBox
+            type="number"
+            name="applications"
+            value={formData.applications}
+            onChange={handleChange}
+            placeholder="Number of Applications"
+            label="Number of Applications"
+          />
+          {errors.applications && (
+            <p className="text-red-500 text-sm text-left">
+              {errors.applications}
+            </p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          className="bg-[#0A2139] text-white px-4 py-2 rounded-md flex justify-self-end"
+        >
+          Submit
+        </button>
+      </form>
+    </section>
+  );
+};
+
+AddStudentForm.propTypes = {
+  onStudentAdded: PropTypes.func,
+  setIsModalOpen: PropTypes.func,
+};
+
+export default AddStudentForm;
