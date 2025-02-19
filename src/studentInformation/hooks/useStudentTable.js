@@ -22,9 +22,21 @@ const { deactivateStudent, getStudentApplications } = useStudentContext();
     setIsApplicationsModalOpen(true);
   };
 
-  const handleToggleExpand = (index) => {
-    setExpandedRow(expandedRow === index ? null : index);
-  };
+  // const handleToggleExpand = (index) => {
+  //   setExpandedRow(expandedRow === index ? null : index);
+  // };
+
+  // const handleToggleExpand = (rowIndex) => {
+  //   console.log("Clicked row index:", rowIndex);
+  //   setExpandedRow((prevIndex) => (prevIndex === rowIndex ? null : rowIndex));
+  // };
+
+const handleToggleExpand = (index) => {
+  setExpandedRow((prevIndex) => {
+    return prevIndex === index ? null : index;
+  });
+};
+
 
   const handleEllipsisClick = (index) => {
     setActiveDropdown(activeDropdown === index ? null : index);
@@ -50,6 +62,6 @@ const { deactivateStudent, getStudentApplications } = useStudentContext();
     applications,
     openApplicationModal,
     isApplicationsModalOpen,
-    setIsApplicationsModalOpen,
+    setIsApplicationsModalOpen
   };
 }

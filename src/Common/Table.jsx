@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 const Table = ({
@@ -9,14 +9,9 @@ const Table = ({
   rowsPerPage = 10,
   currentPage,
   setPage,
+  expandedRow,
+  handleToggleExpand,
 }) => {
-  const [expandedRow, setExpandedRow] = useState(null);
-
-  const handleToggleExpand = (index) => {
-    setExpandedRow((prevIndex) => {
-      return prevIndex === index ? null : index;
-    });
-  };
   const totalPages = Math.ceil(data.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const paginatedData = data.slice(startIndex, startIndex + rowsPerPage);
@@ -34,29 +29,32 @@ const Table = ({
           </tr>
         </thead>
         <tbody>
-          {paginatedData.map((rowData, index) => (
-            <React.Fragment key={index}>
-              <tr
-                className={`hover:bg-[#F1F5F9] cursor-pointer text-center ${
-                  expandedRow === index ? "bg-[#F1F5F9]" : ""
-                }`}
-              >
-                {renderRow(rowData, index, handleToggleExpand, expandedRow)}
-              </tr>
-              {expandedRow === index && renderExpandedRow && (
-                <tr className="bg-inherit">
-                  <td colSpan="6" className="">
-                    {renderExpandedRow(rowData)}
-                  </td>
+          {paginatedData.map((rowData, index) => {
+            return (
+              <React.Fragment key={index}>
+                <tr
+                  className={`hover:bg-[#F1F5F9] cursor-pointer text-center ${
+                    expandedRow === index ? "bg-[#F1F5F9]" : ""
+                  }`}
+                >
+                  {renderRow(rowData, index, handleToggleExpand, expandedRow)}
                 </tr>
-              )}
-            </React.Fragment>
-          ))}
+
+                {expandedRow === index && renderExpandedRow && (
+                  <tr className="bg-inherit">
+                    <td colSpan="6" className="">
+                      {renderExpandedRow(rowData)}
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            );
+          })}
         </tbody>
       </table>
 
       {/* Pagination Controls */}
-      <div className="flex justify-end mt-4 space-x-2">
+      <div className="flex justify-center mt-4 space-x-2">
         <button
           onClick={() => setPage(Math.max(currentPage - 1, 1))}
           disabled={currentPage === 1}
@@ -87,5 +85,7 @@ Table.propTypes = {
   rowsPerPage: PropTypes.number,
   currentPage: PropTypes.number,
   setPage: PropTypes.func,
+  handleToggleExpand: PropTypes.func,
+  expandedRow: PropTypes.number,
 };
 export default Table;

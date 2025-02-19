@@ -27,7 +27,7 @@ const StudentTable = ({ paginatedData, filterState, setPage }) => {
 
   const renderRow = (rowData, index) => (
     <>
-      <td className="py-4 px-0 md:px-4 flex items-center justify-center gap-1">
+      <td className="py-4 px-0 md:px-4 flex items-center md:justify-center justify-start gap-1">
         <button
           type="button"
           className="focus:outline-none bg-primary inline-block lg:hidden"
@@ -59,6 +59,7 @@ const StudentTable = ({ paginatedData, filterState, setPage }) => {
         >
           <Icons.elipsis strokeColor="#0A2139" width={20} height={20} />
         </button>
+        
 
         {activeDropdown === index && (
           <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md w-40">
@@ -100,15 +101,40 @@ const StudentTable = ({ paginatedData, filterState, setPage }) => {
       </td>
     </>
   );
+ 
+const renderExpandedRow = (rowData) => {
+  if (!rowData || typeof rowData !== "object") {
+    return <div>No data available</div>;
+  }
+
+  return (
+    <div className="text-left bg-[#008F8F]/10 p-4">
+      <p>
+        <strong>Email:</strong> {rowData.email || "N/A"}
+      </p>
+      <p>
+        <strong>Date of birth:</strong> {rowData.dateOfBirth || "N/A"}
+      </p>
+      <p>
+        <strong>Applications:</strong>{" "}
+        {JSON.stringify(rowData.applications?.length || 0)}
+      </p>
+    </div>
+  );
+};
+
 
   return (
     <>
       <Table
         headers={headers}
+        renderExpandedRow={renderExpandedRow}
         data={paginatedData}
         renderRow={renderRow}
         currentPage={filterState.page}
         setPage={setPage}
+        expandedRow={expandedRow}
+        handleToggleExpand={handleToggleExpand}
       />
 
       <Modal
